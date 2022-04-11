@@ -20,7 +20,8 @@ class DataProvider with ChangeNotifier {
       notifyListeners();
       return data;
     } else {
-      status = res.reasonPhrase;
+      status = res.body;
+      notifyListeners();
       throw "Unable to retrieve data.";
     }
   }

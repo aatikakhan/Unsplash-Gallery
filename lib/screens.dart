@@ -4,6 +4,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'data_model.dart';
 import 'data_provider.dart';
+import 'widget.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -34,75 +35,71 @@ class _MyHomePageState extends State<MyHomePage> {
 
         return Scaffold(
           body: entries != null
-              ? CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      backgroundColor: Colors.white,
-                      floating: true,
-                      pinned: true,
-                      snap: false,
-                      centerTitle: false,
-                      title: Text(
-                        widget.title,
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                      bottom: AppBar(
+              ? SafeArea(
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      SliverAppBar(
+                        floating: true,
                         backgroundColor: Colors.white,
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * .76,
-                              height: 40,
-                              child: const TextField(
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5.0)),
-                                      borderSide:
-                                          BorderSide(color: Colors.blue)),
-                                  contentPadding: EdgeInsets.all(8),
-                                  hintText: 'Search e.g. "fruits"',
+                        pinned: true,
+                        snap: false,
+                        centerTitle: false,
+                        title: Text(
+                          widget.title,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        bottom: AppBar(
+                          backgroundColor: Colors.white,
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * .77,
+                                child: const TextField(
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(5.0)),
+                                        borderSide:
+                                            BorderSide(color: Colors.blue)),
+                                    contentPadding: EdgeInsets.all(8),
+                                    hintText: 'Search e.g. "fruits"',
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              onPressed: () {
-                                Provider.of<DataProvider>(context).getData();
-                              },
-                              icon:
-                                  const Icon(Icons.search, color: Colors.black),
-                            ),
-                          ],
+                              IconButton(
+                                onPressed: () {
+                                  Provider.of<DataProvider>(context).getData();
+                                },
+                                icon: const Icon(Icons.search,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildListDelegate([
-                        SafeArea(
-                          child: SizedBox(
-                              height: MediaQuery.of(context).size.height,
-                              child: GridView.builder(itemCount: entries!.length,
-                                itemBuilder: (context, index) => Tile(
-                                    index: index,
-                                    image: entries![index].urls!.raw,
-                                  ),
-                                gridDelegate: SliverWovenGridDelegate.count(
-                                  crossAxisCount: 2,
-                                  pattern: [
-                                    const WovenGridTile(1),
-                                    const WovenGridTile(
-                                    12/16,
-                                      crossAxisRatio: 1,
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        )
-                      ]),
-                    ),
-                  ],
+                      SliverList(
+                        delegate: SliverChildListDelegate([
+                          SizedBox(
+                              child: MasonryGridView.count(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 4,
+                            crossAxisSpacing: 4,
+                            itemCount: entries!.length,
+                            itemBuilder: (context, index) {
+                              return Tile(
+                                image: entries![index].urls!,
+                                index: index,
+                              );
+                            },
+                          )),
+                        ]),
+                      ),
+                    ],
+                  ),
                 )
               : Center(
                   child: Column(
@@ -127,43 +124,56 @@ class Tile extends StatelessWidget {
     Key? key,
     required this.image,
     required this.index,
-    this.extent,
-    this.bottomSpace,
   }) : super(key: key);
 
   final int index;
-  final double? extent;
-  final double? bottomSpace;
-  final String? image;
+  final Urls? image;
 
   @override
   Widget build(BuildContext context) {
-    final child = Container(
-      margin: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-          border: Border.all(),
-          boxShadow: const [
-            BoxShadow(
-                blurRadius: 10, color: Colors.white70, offset: Offset(1, 3))
-          ]),
-      child:Image.network(
-              image!,
-              fit: BoxFit.fill,
+    return GestureDetector(
+      onTap: (() => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) {
+                return FullView(
+                  image: image!.raw!,
+                );
+              },
             ),
+          )),
+      child: imageView(image!.thumb!),
     );
+  }
+}
 
-    if (bottomSpace == null) {
-      return child;
-    }
+class FullView extends StatelessWidget {
+  final String image;
+  const FullView({required this.image, Key? key}) : super(key: key);
 
-    return Column(
-      children: [
-        Expanded(child: child),
-        Container(
-          height: bottomSpace,
-          color: Colors.white,
-        )
-      ],
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          IconButton(
+            icon: Image.asset(
+              'assets/details_icon.png',
+              color: Colors.black,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
+      ),
+      body: Center(child: imageView(image)),
     );
   }
 }

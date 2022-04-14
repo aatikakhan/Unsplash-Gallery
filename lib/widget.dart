@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'data_model.dart';
-import 'screens.dart';
+import 'screens/full_view.dart';
 
 Widget imageView(String image) {
   return Image.network(
@@ -27,6 +27,34 @@ Widget imageView(String image) {
       );
     },
   );
+}
+
+class Tile extends StatelessWidget {
+  const Tile({
+    Key? key,
+    required this.image,
+    required this.index,
+  }) : super(key: key);
+
+  final int index;
+  final Urls? image;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (() => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) {
+                return FullView(
+                  image: image!.raw!,
+                );
+              },
+            ),
+          )),
+      child: imageView(image!.thumb!),
+    );
+  }
 }
 
 Widget imageTile(BuildContext context, Urls? image, int index) {

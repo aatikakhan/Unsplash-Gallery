@@ -9,9 +9,8 @@ import 'data_model.dart';
 class DataProvider with ChangeNotifier {
   List<DataModel>? data;
   String? status = 'hold on';
-  DataModel? dat;
   String? searchQuery = 'star-wars';
-  String sortbyValue = '';
+  String sortbyValue = 'latest';
   String colorValue = '';
   String orientationValue = '';
 
@@ -38,7 +37,7 @@ class DataProvider with ChangeNotifier {
       data = jsondata
           .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
           .toList();
-
+ 
       notifyListeners();
       return data;
     } else {

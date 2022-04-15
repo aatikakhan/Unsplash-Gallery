@@ -18,13 +18,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<DataModel>? entries;
-
   TextEditingController textEditingController = TextEditingController();
-  String message = "";
+int perPageValue = 10;
 
   @override
   void initState() {
-    Provider.of<DataProvider>(context, listen: false).getData('', '', '');
+    Provider.of<DataProvider>(context, listen: false).getData('', '', '', perPageValue.toString());
     super.initState();
   }
 
@@ -94,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         textEditingController.text;
                                     Provider.of<DataProvider>(context,
                                             listen: false)
-                                        .getData('', '', '');
+                                        .getData('', '', '',perPageValue.toString());
                                   },
                                   icon: const Icon(Icons.search,
                                       color: Colors.black),
@@ -157,7 +156,36 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: Text(
                                     'No results found.',
                                   ),
-                                ))
+                                )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              side: const BorderSide(
+                                  width: 2.0, color: Colors.black),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(32.0),
+                              ),
+                            ),
+                            onPressed: ()async { 
+                              perPageValue = perPageValue + 10;
+                              await Provider.of<DataProvider>(context, listen: false)
+                                  .getData('', '', '' , perPageValue.toString());
+                             entries= Provider.of<DataProvider>(context, listen: false)
+                                  .data;
+                            
+                            },
+                            child: const Center(
+                              child: Text(
+                                ' Load more.. ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )

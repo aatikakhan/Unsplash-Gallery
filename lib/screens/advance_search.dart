@@ -378,7 +378,7 @@ class _AdvanceSearchState extends State<AdvanceSearch> {
                 ),
                 onPressed: () {
                   Provider.of<DataProvider>(context, listen: false)
-                      .getData(sortbyValue,  colorValue,orientationValue);
+                      .getData(sortbyValue,  colorValue,orientationValue, '');
                   Provider.of<DataProvider>(context, listen: false).data;
                   Navigator.pop(context);
                 },

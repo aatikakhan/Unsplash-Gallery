@@ -11,13 +11,21 @@ class DataProvider with ChangeNotifier {
   String? status = 'hold on';
   DataModel? dat;
   String? searchQuery = 'star-wars';
+  String sortbyValue = '';
+  String colorValue = '';
+  String orientationValue = '';
 
-  Future<List<DataModel>?> getData() async {
+  Future<List<DataModel>?> getData(
+      String orderbyValue, String colorValue, String orientationValue) async {
     String url = "https://api.unsplash.com/search/photos/";
 
     Map<String, String> qParams = {
-      'client_id': id,
+      'client_id': clientIdKey,
       'query': searchQuery!,
+      'per_page': '10',
+      'order_by': orderbyValue,
+      'color': colorValue,
+      'orientation': orientationValue,
     };
 
     Uri uri = Uri.parse(url).replace(queryParameters: qParams);

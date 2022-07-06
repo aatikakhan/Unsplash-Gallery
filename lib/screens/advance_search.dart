@@ -11,6 +11,7 @@ class AdvanceSearch extends StatefulWidget {
 }
 
 class _AdvanceSearchState extends State<AdvanceSearch> {
+  int perPageValue = 10;
   bool _relevanceCheck = false;
   bool _newestCheck = false;
   String relevanceValue = 'relevence';
@@ -377,9 +378,19 @@ class _AdvanceSearchState extends State<AdvanceSearch> {
                   ),
                 ),
                 onPressed: () {
+                  Provider.of<DataProvider>(context, listen: false).getData(
+                      sortbyValue,
+                      colorValue,
+                      orientationValue,
+                      perPageValue.toString());
+                  Provider.of<DataProvider>(context, listen: false).colorValue =
+                      colorValue;
                   Provider.of<DataProvider>(context, listen: false)
-                      .getData(sortbyValue,  colorValue,orientationValue, '');
-                  Provider.of<DataProvider>(context, listen: false).data;
+                      .orderbyValue = sortbyValue;
+                  Provider.of<DataProvider>(context, listen: false)
+                      .orientationValue = orientationValue;
+                  Provider.of<DataProvider>(context, listen: false).itemCount =
+                      perPageValue.toString();
                   Navigator.pop(context);
                 },
                 child: const Center(

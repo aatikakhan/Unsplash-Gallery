@@ -40,6 +40,7 @@ class DataProvider with ChangeNotifier {
             .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
             .toList();
       } else {
+        // this is to add more data to existing data
         data!.addAll(jsondata
             .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
             .toList());
@@ -60,7 +61,4 @@ class DataProvider with ChangeNotifier {
   }
 }
 
-enum DataType {
-  getData,
-  getMoreData,
-}
+enum DataType { getData, getMoreData }

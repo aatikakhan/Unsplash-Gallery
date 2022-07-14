@@ -6,17 +6,9 @@ import 'screens/home_page.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<DataProvider>(
-          create: (_) => DataProvider(),
-        ),
-      ],
-      child: Builder(
-        builder: (context) {
-          return const MyApp();
-        },
-      ),
+    ChangeNotifierProvider<DataProvider>(
+      create: (_) => DataProvider(),
+      child: const MyApp(),
     ),
   );
 }

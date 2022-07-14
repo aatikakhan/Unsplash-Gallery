@@ -382,7 +382,8 @@ class _AdvanceSearchState extends State<AdvanceSearch> {
                       sortbyValue,
                       colorValue,
                       orientationValue,
-                      perPageValue.toString());
+                      perPageValue.toString(),
+                      type: DataType.getData);
                   Provider.of<DataProvider>(context, listen: false).colorValue =
                       colorValue;
                   Provider.of<DataProvider>(context, listen: false)

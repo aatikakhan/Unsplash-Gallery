@@ -17,7 +17,8 @@ class DataProvider with ChangeNotifier {
   String itemCount = '10';
 
   Future<List<DataModel>?> getData(String orderbyValue, String colorValue,
-      String orientationValue, String perPageValue) async {
+      String orientationValue, String perPageValue,
+      {required DataType type}) async {
     String url = "https://api.unsplash.com/search/photos/";
     Map<String, String> qParams = {
       'client_id': clientIdKey,
@@ -34,9 +35,15 @@ class DataProvider with ChangeNotifier {
     if (res.statusCode == 200) {
       var decodedJson = json.decode(res.body);
       List jsondata = decodedJson['results'];
-      data = jsondata
-          .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
-          .toList();
+      if (type == DataType.getData) {
+        data = jsondata
+            .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
+            .toList();
+      } else {
+        data!.addAll(jsondata
+            .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
+            .toList());
+      }
       notifyListeners();
       return data;
     } else {
@@ -48,7 +55,12 @@ class DataProvider with ChangeNotifier {
 
 // function to load more data
   getMoreData(perPageValue) {
-    getData(
-        orderbyValue, colorValue, orientationValue, perPageValue.toString());
+    getData(orderbyValue, colorValue, orientationValue, perPageValue.toString(),
+        type: DataType.getMoreData);
   }
+}
+
+enum DataType {
+  getData,
+  getMoreData,
 }

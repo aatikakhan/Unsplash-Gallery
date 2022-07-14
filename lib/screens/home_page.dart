@@ -29,8 +29,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<DataProvider>(context, listen: false)
-        .getData('', '', '', itemCount);
+    Provider.of<DataProvider>(context, listen: false).getData(
+        '', '', '', itemCount,type: DataType.getData,
+     );
     _controller.addListener(() {
       if (_controller.position.pixels == _controller.position.maxScrollExtent) {
         perPageValue = perPageValue + 10;
@@ -105,7 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       Provider.of<DataProvider>(context,
                                               listen: false)
                                           .getData(orderby, color, orientation,
-                                              itemCount);
+                                              itemCount,
+                                              type: DataType.getData);
                                     },
                                     icon: const Icon(Icons.search,
                                         color: Colors.black),

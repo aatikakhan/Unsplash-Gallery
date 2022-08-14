@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:ungallery/service.dart';
 
 import 'constants.dart';
 import 'data_model.dart';
@@ -19,6 +17,7 @@ class DataProvider with ChangeNotifier {
   Future<List<DataModel>?> getData(String orderbyValue, String colorValue,
       String orientationValue, String perPageValue,
       {required DataType type}) async {
+    final HttpService httpService = HttpService();
     Map<String, String> qParams = {
       'client_id': clientIdKey,
       'query': searchQuery!,
@@ -28,29 +27,19 @@ class DataProvider with ChangeNotifier {
       'orientation': orientationValue,
     };
 
-    Uri uri = Uri.parse(baseUrl).replace(queryParameters: qParams);
+    await httpService.getPosts(qParams, type).then((value) {
+      data = value;
+    }).catchError((onError) {
+      status = onError.toString();
+    });
 
-    final res = await http.get(uri);
-    if (res.statusCode == 200) {
-      var decodedJson = json.decode(res.body);
-      List jsondata = decodedJson['results'];
-      if (type == DataType.getData) {
-        data = jsondata
-            .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
-            .toList();
-      } else {
-        // this is to add more data to existing data
-        data!.addAll(jsondata
-            .map((item) => DataModel.fromJson(item as Map<String, dynamic>))
-            .toList());
-      }
-      notifyListeners();
+    notifyListeners();
+    if (data != null) {
       return data;
-    } else {
-      status = res.body;
-      notifyListeners();
-      throw "Unable to retrieve data.";
     }
+    status = "something went wrong";
+    notifyListeners();
+    throw "Something went wrong.";
   }
 
 // function to load more data

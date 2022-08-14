@@ -20,7 +20,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<DataModel>? entries;
-  TextEditingController textEditingController = TextEditingController();
+  TextEditingController searchText = TextEditingController();
   int perPageValue = 10;
   final ScrollController _controller = ScrollController();
   String orderby = '';
@@ -87,15 +87,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                       maxLines: 1,
                                       maxLength: 15,
                                       showCursor: true,
-                                      controller: textEditingController,
-                                      decoration: const InputDecoration(
-                                        counter: Offstage(),
+                                      controller: searchText,
+                                      decoration: InputDecoration(
+                                        suffixIcon: IconButton(
+                                          icon: const Icon(Icons.clear),
+                                          onPressed: searchText.clear,
+                                        ),
+                                        counter: const Offstage(),
                                         border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0)),
-                                            borderSide:
-                                                BorderSide(color: Colors.blue)),
-                                        contentPadding: EdgeInsets.all(8),
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                            borderSide: const BorderSide(
+                                                color: Colors.blue)),
+                                        contentPadding: const EdgeInsets.all(8),
                                         hintText: 'Search e.g. "star wars"',
                                       ),
                                     ),
@@ -105,9 +109,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                       SystemChannels.textInput
                                           .invokeMethod('TextInput.hide');
                                       Provider.of<DataProvider>(context,
-                                                  listen: false)
-                                              .searchQuery =
-                                          textEditingController.text;
+                                              listen: false)
+                                          .searchQuery = searchText.text;
 
                                       Provider.of<DataProvider>(context,
                                               listen: false)
@@ -120,13 +123,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                 ],
                               ),
-                              textEditingController.text.isNotEmpty
+                              searchText.text.isNotEmpty
                                   ? Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          textEditingController.text.toString(),
+                                          searchText.text.toString(),
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),

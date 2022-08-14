@@ -19,7 +19,6 @@ class DataProvider with ChangeNotifier {
   Future<List<DataModel>?> getData(String orderbyValue, String colorValue,
       String orientationValue, String perPageValue,
       {required DataType type}) async {
-    String url = "https://api.unsplash.com/search/photos/";
     Map<String, String> qParams = {
       'client_id': clientIdKey,
       'query': searchQuery!,
@@ -29,7 +28,7 @@ class DataProvider with ChangeNotifier {
       'orientation': orientationValue,
     };
 
-    Uri uri = Uri.parse(url).replace(queryParameters: qParams);
+    Uri uri = Uri.parse(baseUrl).replace(queryParameters: qParams);
 
     final res = await http.get(uri);
     if (res.statusCode == 200) {

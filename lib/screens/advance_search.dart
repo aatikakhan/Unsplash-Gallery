@@ -5,6 +5,7 @@ import '../data_provider.dart';
 
 class AdvanceSearch extends StatefulWidget {
   const AdvanceSearch({Key? key}) : super(key: key);
+  static String id = '/advanceSearch';
 
   @override
   State<AdvanceSearch> createState() => _AdvanceSearchState();

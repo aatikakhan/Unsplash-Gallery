@@ -5,12 +5,14 @@ import 'package:provider/provider.dart';
 
 import '../data_model.dart';
 import '../data_provider.dart';
-import '../widget.dart';
+import '../widgets/image_tile.dart';
 import 'advance_search.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
+
+  static String id = '/home';
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -30,8 +32,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     Provider.of<DataProvider>(context, listen: false).getData(
-        '', '', '', itemCount,type: DataType.getData,
-     );
+      '',
+      '',
+      '',
+      itemCount,
+      type: DataType.getData,
+    );
     _controller.addListener(() {
       if (_controller.position.pixels == _controller.position.maxScrollExtent) {
         perPageValue = perPageValue + 10;
@@ -130,15 +136,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                             color: Colors.blue,
                                             size: 30,
                                           ),
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (_) {
-                                                return const AdvanceSearch();
-                                              },
-                                            ),
-                                          ),
-                                        )
+                                          onTap: (() => Navigator.pushNamed(
+                                              context, AdvanceSearch.id)),
+                                        ),
                                       ],
                                     )
                                   : const SizedBox()
@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       column: 2,
                                       children: List.generate(
                                           entries!.length,
-                                          (i) => Tile(
+                                          (i) => ImageTile(
                                                 image: entries![i].urls!,
                                                 index: i,
                                               ))),

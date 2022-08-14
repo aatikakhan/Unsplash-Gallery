@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ungallery/widgets/filter_buttons.dart';
+import 'package:ungallery/widgets/orientation.dart';
+import 'package:ungallery/widgets/select_colour.dart';
+import 'package:ungallery/widgets/sortby.dart';
 
 import '../data_provider.dart';
 
@@ -66,233 +70,170 @@ class _AdvanceSearchState extends State<AdvanceSearch> {
         backgroundColor: Colors.white,
         title: const Text('Filters', style: TextStyle(color: Colors.black)),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 8),
-              const Text('Sort by : '),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * .02,
-                child: Row(
-                  children: [
-                    _relevanceCheck
-                        ? const SizedBox(width: 16, child: Icon(Icons.check))
-                        : const SizedBox(width: 16),
-                    const SizedBox(width: 16),
-                    GestureDetector(
-                      child: const Text('Relevance'),
-                      onTap: () {
-                        sortbyValue = 'relevant';
-                        setState(() {
-                          _relevanceCheck = true;
-                          _newestCheck = false;
-                        });
-                      },
-                    ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 8),
+                const Text('Sort by : '),
+                const SizedBox(height: 12),
+                Sortby(
+                    text: 'Newest'.toString(),
+                    onTap: () {
+                      sortbyValue = 'relevant';
+                      setState(() {
+                        _relevanceCheck = true;
+                        _newestCheck = false;
+                      });
+                    },
+                    check: _relevanceCheck),
+                const SizedBox(height: 12),
+                Sortby(
+                    text: 'Relevant'.toString(),
+                    onTap: () {
+                      sortbyValue = 'latest';
+                      setState(() {
+                        _relevanceCheck = false;
+                        _newestCheck = true;
+                      });
+                    },
+                    check: _newestCheck),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Divider(thickness: 1),
+                ),
+                const Text('Color : '),
+                const SizedBox(height: 12),
+                SelectColour(
+                    text: 'Any Color',
+                    onTap: () {
+                      colorValue = '';
+                      setState(() {
+                        _anyColorCheck = true;
+                        _blacAndWhiteCheck = false;
+                        _selectedToneCheck = false;
+                      });
+                    },
+                    check: _anyColorCheck),
+                const SizedBox(height: 12),
+                SelectColour(
+                    text: 'Black and White',
+                    onTap: () {
+                      colorValue = 'black_and_white';
+                      setState(() {
+                        _anyColorCheck = false;
+                        _blacAndWhiteCheck = true;
+                        _selectedToneCheck = false;
+                      });
+                    },
+                    check: _blacAndWhiteCheck),
+                const SizedBox(height: 12),
+                Row(
+                  children: const [
+                    SizedBox(width: 32),
+                    Text('Tones:'),
                   ],
                 ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * .02,
-                child: Row(
-                  children: [
-                    _newestCheck
-                        ? const SizedBox(width: 16, child: Icon(Icons.check))
-                        : const SizedBox(width: 16),
-                    const SizedBox(width: 16),
-                    GestureDetector(
-                      child: const Text('Newest'),
-                      onTap: () {
-                        sortbyValue = 'latest';
-                        setState(() {
-                          _relevanceCheck = false;
-                          _newestCheck = true;
-                        });
-                      },
-                    ),
-                  ],
+                const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height * .1,
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 16),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .1,
+                            width: MediaQuery.of(context).size.width * .5,
+                            child: GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 10,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 5,
+                                ),
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: GestureDetector(
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              color: materialColorsList[index],
+                                              shape: BoxShape.circle,
+                                              border: indextone == index
+                                                  ? Border.all(
+                                                      color: Colors.grey,
+                                                      width: 4)
+                                                  : Border.all(
+                                                      color: Colors.white,
+                                                      width: 4))),
+                                      onTap: () {
+                                        setState(() {
+                                          indextone = index;
+                                          _selectedToneCheck = true;
+                                          _anyColorCheck = false;
+                                          _blacAndWhiteCheck = false;
+                                          colorValue =
+                                              colourNameList[index].toString();
+                                        });
+                                      },
+                                    ),
+                                  );
+                                }),
+                          )
+                        ],
+                      )),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Divider(thickness: 1),
-              ),
-              const Text('Color : '),
-              const SizedBox(height: 12),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * .02,
-                  child: Row(
-                    children: [
-                      _anyColorCheck
-                          ? const SizedBox(width: 16, child: Icon(Icons.check))
-                          : const SizedBox(width: 16),
-                      const SizedBox(width: 16),
-                      GestureDetector(
-                        child: const Text('Any Color'),
-                        onTap: () {
-                          colorValue = '';
-                          setState(() {
-                            _anyColorCheck = true;
-                            _blacAndWhiteCheck = false;
-                            _selectedToneCheck = false;
-                          });
-                        },
-                      ),
-                    ],
-                  )),
-              const SizedBox(height: 12),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * .02,
-                  child: Row(
-                    children: [
-                      _blacAndWhiteCheck
-                          ? const SizedBox(width: 16, child: Icon(Icons.check))
-                          : const SizedBox(width: 16),
-                      const SizedBox(width: 16),
-                      GestureDetector(
-                        child: const Text('Black and White'),
-                        onTap: () {
-                          colorValue = 'black_and_white';
-                          setState(() {
-                            _anyColorCheck = false;
-                            _blacAndWhiteCheck = true;
-                            _selectedToneCheck = false;
-                          });
-                        },
-                      ),
-                    ],
-                  )),
-              const SizedBox(height: 12),
-              const SizedBox(width: 32),
-              Row(
-                children: const [
-                  SizedBox(width: 32),
-                  Text('Tones:'),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: SizedBox(
-                    height: MediaQuery.of(context).size.height * .1,
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 16),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .1,
-                          width: MediaQuery.of(context).size.width * .5,
-                          child: GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 10,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 5,
-                              ),
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: GestureDetector(
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                            color: materialColorsList[index],
-                                            shape: BoxShape.circle,
-                                            border: indextone == index
-                                                ? Border.all(
-                                                    color: Colors.grey,
-                                                    width: 4)
-                                                : Border.all(
-                                                    color: Colors.white,
-                                                    width: 4))),
-                                    onTap: () {
-                                      setState(() {
-                                        indextone = index;
-                                        _selectedToneCheck = true;
-                                        _anyColorCheck = false;
-                                        _blacAndWhiteCheck = false;
-                                        colorValue =
-                                            colourNameList[index].toString();
-                                      });
-                                    },
-                                  ),
-                                );
-                              }),
-                        )
-                      ],
-                    )),
-              ),
-              const Divider(thickness: 1),
-              const SizedBox(height: 12),
-              const Text('Orientation :'),
-              const SizedBox(height: 12),
-              GestureDetector(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _landscapeCheck
-                        ? const SizedBox(width: 16, child: Icon(Icons.check))
-                        : const SizedBox(width: 16),
-                    const SizedBox(width: 12),
-                    const Icon(Icons.crop_landscape_outlined),
-                    const SizedBox(width: 12),
-                    const Text('Landscape'),
-                  ],
+                const Divider(thickness: 1),
+                const SizedBox(height: 12),
+                const Text('Orientation :'),
+                const SizedBox(height: 12),
+                OrientationWidget(
+                  text: 'Landscape',
+                  icon: const Icon(Icons.crop_landscape_outlined),
+                  check: _landscapeCheck,
+                  onTap: () {
+                    orientationValue = 'landscape';
+                    setState(() {
+                      _portraitCheck = false;
+                      _landscapeCheck = true;
+                      _squareCheck = false;
+                    });
+                  },
                 ),
-                onTap: () {
-                  orientationValue = 'landscape';
-                  setState(() {
-                    _portraitCheck = false;
-                    _landscapeCheck = true;
-                    _squareCheck = false;
-                  });
-                },
-              ),
-              GestureDetector(
-                child: Row(
-                  children: [
-                    _portraitCheck
-                        ? const SizedBox(width: 16, child: Icon(Icons.check))
-                        : const SizedBox(width: 16),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(Icons.crop_portrait),
-                    ),
-                    const Text('  Portrait'),
-                  ],
+                const SizedBox(height: 12),
+                OrientationWidget(
+                  text: 'Portait',
+                  icon: const Icon(Icons.crop_portrait),
+                  check: _portraitCheck,
+                  onTap: () {
+                    orientationValue = 'portrait';
+                    setState(() {
+                      _portraitCheck = true;
+                      _landscapeCheck = false;
+                      _squareCheck = false;
+                    });
+                  },
                 ),
-                onTap: () {
-                  orientationValue = 'portrait';
-                  setState(() {
-                    _portraitCheck = true;
-                    _landscapeCheck = false;
-                    _squareCheck = false;
-                  });
-                },
-              ),
-              GestureDetector(
-                child: Row(children: [
-                  _squareCheck
-                      ? const SizedBox(width: 16, child: Icon(Icons.check))
-                      : const SizedBox(width: 16),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.crop_square),
-                  const SizedBox(width: 12),
-                  const Text('Square'),
-                ]),
-                onTap: () {
-                  orientationValue = 'squarish';
-                  setState(() {
-                    _portraitCheck = false;
-                    _landscapeCheck = false;
-                    _squareCheck = true;
-                  });
-                },
-              ),
-            ],
+                const SizedBox(height: 12),
+                OrientationWidget(
+                  text: 'Square',
+                  icon: const Icon(Icons.crop_square),
+                  check: _squareCheck,
+                  onTap: () {
+                    orientationValue = 'squarish';
+                    setState(() {
+                      _portraitCheck = false;
+                      _landscapeCheck = false;
+                      _squareCheck = true;
+                    });
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -302,40 +243,14 @@ class _AdvanceSearchState extends State<AdvanceSearch> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  side: const BorderSide(width: 2.0, color: Colors.black),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
-                ),
-                onPressed: () {
+            FilterButton(
+                text: ' Cancel '.toString(),
+                onTap: () {
                   Navigator.pop(context);
-                },
-                child: const Center(
-                  child: Text(
-                    ' Cancel ',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.white,
-                  side: const BorderSide(width: 2.0, color: Colors.black),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32.0),
-                  ),
-                ),
-                onPressed: () {
+                }),
+            FilterButton(
+                text: ' Clear ',
+                onTap: () {
                   setState(() {
                     // make everything false
                     _relevanceCheck = false;
@@ -353,17 +268,7 @@ class _AdvanceSearchState extends State<AdvanceSearch> {
                     colorValue = '';
                     orientationValue = '';
                   });
-                },
-                child: const Center(
-                  child: Text(
-                    ' Clear ',
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+                }),
             const SizedBox(
               height: 40,
               width: 80,
